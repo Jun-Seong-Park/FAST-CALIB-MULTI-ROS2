@@ -1,4 +1,16 @@
-# FAST-Calib ROS2 版本
+# FAST-CALIB-MULTI-ROS2
+
+> Multi-board extension of [ichangjian/FAST-Calib-ROS2](https://github.com/ichangjian/FAST-Calib-ROS2), which itself is a ROS2 port of [hku-mars/FAST-Calib](https://github.com/hku-mars/FAST-Calib).
+> This fork adds **multi-scene / multi-board** calibration on top of the single-scene flow, tested on **Ubuntu 22.04 + ROS2 Humble** with **Livox MID-360** + **See3CAM_24CUG (AR0234)**.
+
+## What's new in this fork
+- `src/multi_scene.cpp` + `launch/multi_calib.launch.py`: aggregate multiple board poses into one extrinsic.
+- `config/qr_params.yaml`: AR0234 1920x1080 intrinsics and `multi_fast_calib` parameter group.
+- `.gitignore`: exclude colcon `build/`, `install/`, `log/` and rosbag `*.db3*`.
+
+---
+
+# FAST-Calib ROS2 版本 (upstream notes)
 
 在 [engine1wu](https://github.com/hku-mars/FAST-Calib/issues/35) 的基础上将 ROS1 的 FAST-Calib 项目转换成了 ROS2。仅在 ubuntu 22.04 humble 上进行了测试。
 ## 运行说明
