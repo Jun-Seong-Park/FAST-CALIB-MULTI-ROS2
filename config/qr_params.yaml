@@ -9,6 +9,26 @@ fast_calib:
     # k2: 0.113872
     # p1: -0.000056
     # p2: 0.000112
+    
+    # See3CAM_24CUG, 1280x720  exp: 10ms
+    # fx: 689.088396
+    # fy: 685.963055
+    # cx: 651.682837
+    # cy: 355.539541
+    # k1: -0.331749
+    # k2: 0.123768
+    # p1: 0.000492
+    # p2: -0.000051
+
+    # See3CAM_24CUG, 640x360  exp: 10ms
+    fx: 344.901916
+    fy: 343.588634
+    cx: 324.878505
+    cy: 177.143198
+    k1: -0.334114
+    k2: 0.125136
+    p1: 0.000264
+    p2: 0.000110
 
     # AR0234 1920x1080 original
     # fx: 1237.23
@@ -20,15 +40,15 @@ fast_calib:
     # p1: -0.001649
     # p2: 0.00239
 
-   # AR0234 1920x1080 new
-    fx: 1285.156174
-    fy: 1277.656483
-    cx: 950.997345
-    cy: 585.418991
-    k1: 0.013188
-    k2: -0.091481
-    p1: -0.000654
-    p2: 0.000811
+  #  # AR0234 1920x1080 new
+  #   fx: 1285.156174
+  #   fy: 1277.656483
+  #   cx: 950.997345
+  #   cy: 585.418991
+  #   k1: 0.013188
+  #   k2: -0.091481
+  #   p1: -0.000654
+  #   p2: 0.000811
 
     # AR0234 1920x1080 new bad
     # fx: 883.640625
@@ -43,30 +63,30 @@ fast_calib:
     
     # Calibration target parameters
     marker_size: 0.1 # ArUco marker size 4.7cm
-    delta_width_qr_center: 0.340 # Half the distance between the centers of two markers in the horizontal direction 
-    delta_height_qr_center: 0.217 # Half the distance between the centers of two markers in the vertical direction (13.5cm / 2)
-    delta_width_circles: 0.15 # Distance between the centers of two circles in the horizontal direction (17.6cm)
-    delta_height_circles: 0.126 # Distance between the centers of two circles in the vertical direction (17.6cm)
+    delta_width_qr_center: 0.340 # Half the distance between the centers of two markers in the horizontal direction  # 0.340
+    delta_height_qr_center: 0.217 # Half the distance between the centers of two markers in the vertical direction (13.5cm / 2) # 0.217
+    delta_width_circles: 0.30 # Distance between the centers of two circles in the horizontal direction (17.6cm) # 0.15
+    delta_height_circles: 0.252 # Distance between the centers of two circles in the vertical direction (17.6cm) # 0.126
     circle_radius: 0.07 # Radius of the circle 5cm
 
-    # delta_width_qr_center: 0.340 # Half the distance between the centers of two markers in the horizontal direction 
+    # delta_width_qr_center: 0.340 # Half the distance between the centers of two markers in the horizontal direction 30
     # delta_height_qr_center: 0.217 # Half the distance between the centers of two markers in the vertical direction (13.5cm / 2)
     # delta_width_circles: 0.150 # Distance between the centers of two circles in the horizontal direction (17.6cm)
     # delta_height_circles: 0.126 # Distance between the centers of two circles in the vertical direction (17.6cm)
     
     # Distance filter
-    x_min: 0.6
-    x_max: 1.8
-    y_min: -1.0
-    y_max: 1.0
-    z_min: 0.4
-    z_max: 0.9  
+    x_min: 0.5
+    x_max: 2.0
+    y_min: -0.5
+    y_max: 0.5
+    z_min: 0.0
+    z_max: 0.9 
     
 
     # Input
     lidar_topic: "/livox/lidar" # /ouster/points /livox/lidar
-    bag_path: "/home/alux-autopilot22/FAST-CALIB-MULTI-ROS2/calib_data/AR0234-MID360"
-    image_path: "/home/alux-autopilot22/FAST-CALIB-MULTI-ROS2/calib_data/AR0234-MID360/image.png"
+    bag_path: "/home/alux-autopilot22/FAST-CALIB-MULTI-ROS2/calib_data/See3-MID360"
+    image_path: "/home/alux-autopilot22/FAST-CALIB-MULTI-ROS2/calib_data/See3-MID360/image.png"
 
     # Output
     output_path: "/home/alux-autopilot22/FAST-CALIB-MULTI-ROS2/output"
@@ -75,4 +95,4 @@ fast_calib:
 multi_fast_calib:
   ros__parameters:
     output_path: "/home/alux-autopilot22/FAST-CALIB-MULTI-ROS2/output"
-    min_scenes: 5  # Minimum number of scenes for multi-scene calibration (>=3)
+    min_scenes: 3  # Minimum number of scenes for multi-scene calibration (>=3)
