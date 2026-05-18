@@ -1,64 +1,53 @@
-# FAST-Calib ROS2 Version
+# FAST-Calib (ROS 2)
 
-Based on [engine1wu](https://github.com/hku-mars/FAST-Calib/issues/35), the ROS1 FAST-Calib project has been ported to ROS2. Tested only on Ubuntu 22.04 Humble.
-## Usage
-### Parameter configuration
-Test data is provided under `calib_data/mid360_11`: the `mid360/11` point cloud from the [sample data](https://connecthkuhk-my.sharepoint.com/:f:/g/personal/zhengcr_connect_hku_hk/Eq_k_4Mf_11Eggg4a5lbRzgBHwd0EivtCJd2ExtcNlu1FA?e=vjm4gH), cropped and converted into the ROS2 format. To run this test data, only the path-related parameters in `config/qr_params.yaml` need to be updated, where `bag_path` points to the folder of the *ros2 bag PointCloud2*.
-### Launch the node
+Target-based LiDAR–Camera extrinsic calibration, ported to ROS 2.
+Tested on Ubuntu 22.04 + ROS 2 Humble.
+
+## Build
+
+```bash
+cd ~/your_ros2_ws
+colcon build --packages-select fast_calib
+source install/setup.bash
+```
+
+## Configure
+
+Edit `config/qr_params.yaml` and set at least:
+
+- `image_path`   — path to the calibration image (PNG/JPG)
+- `bag_path`     — folder of a `ros2 bag` recording containing `PointCloud2`
+- `lidar_topic`  — point-cloud topic name inside the bag (e.g. `/livox/lidar`)
+- `output_path`  — folder where results are written
+- camera intrinsics (`fx, fy, cx, cy, k1, k2, p1, p2`)
+- target geometry (`marker_size`, `delta_width_*`, `delta_height_*`, `circle_radius`)
+- ROI box (`x_min … z_max`) that contains the calibration board
+
+Sample data is provided under `calib_data/mid360_11`.
+
+## Run
+
+### Single-scene calibration
+
 ```bash
 ros2 launch fast_calib calib.launch.py
 ```
 
+Writes `calib_result.txt`, `colored_cloud.pcd/.ply`, and `qr_detect.png` into `output_path`.
+Each run also appends the four detected circle-center pairs to `circle_center_record.txt`.
 
-# FAST-Calib
-FAST-Calib is an automatic target-based extrinsic calibration tool for LiDAR-camera systems (eg., [FAST-LIVO2](https://github.com/hku-mars/FAST-LIVO2)). 
+### Multi-scene calibration
 
-**Key highlights include:** 
+The multi-scene node jointly solves the extrinsic from several single-scene results.
 
-1. Support solid-state and mechanical LiDAR.
-2. No need for any initial extrinsic parameters.
-3. Achieve highly accurate calibration results **in just 2 seconds**.
+1. Run `calib.launch.py` at least `min_scenes` times (default `3`), each time with a different
+   scene's `image_path` / `bag_path`. Every run appends one block of four LiDAR / QR center pairs
+   to `<output_path>/circle_center_record.txt`.
+2. Then solve jointly over the last `min_scenes` blocks:
 
-**In short, it makes extrinsic calibration as simple as intrinsic calibration.**
-
-📬 For further assistance or inquiries, please feel free to contact Chunran Zheng at zhengcr@connect.hku.hk.
-
-<p align="center">
-  <img src="./pics/calib.jpg" width="100%">
-  <font color=#a0a0a0 size=2>Left: Example of circle extraction from Mid360 point cloud | Right: Point cloud colored with calibrated extrinsic.</font>
-</p>
-
-## 1. Prerequisites
-PCL>=1.8, OpenCV>=4.0.
-
-## 2. Run our examples
-1. Prepare the static acquisition data in `calib_data` folder (see [sample data](https://connecthkuhk-my.sharepoint.com/:f:/g/personal/zhengcr_connect_hku_hk/Eq_k_4Mf_11Eggg4a5lbRzgBHwd0EivtCJd2ExtcNlu1FA?e=vjm4gH) from Mid360, Avia and Ouster):
-- rosbag containing point cloud messages
-- corresponding image
-
-2. Run the calibration process:
 ```bash
-roslaunch fast_calib calib.launch
+ros2 launch fast_calib multi_calib.launch.py
 ```
 
-## 3. Run on your own sensor suite
-1. Customize the calibration target in the image below.
-2. Record data to rosbag.
-3. Provide the instrinsic matrix in `qr_params.yaml`.
-4. Set distance filter in `qr_params.yaml` for board point cloud (extra points are acceptable).
-5. Calibrate now!
-
-<p align="center">
-  <img src="./pics/calibration_target.jpg" width="100%">
-  <font color=#a0a0a0 size=2>Left: Actual calibration target | Right: Technical drawing with annotated dimensions.</font>
-</p>
-
-## 4. Appendix
-Related article is coming soon...
-
-The calibration target design is based on the [velo2cam_calibration](https://github.com/beltransen/velo2cam_calibration).
-
-For further details on the algorithm workflow, see [this document](https://github.com/xuankuzcr/FAST-Calib/blob/main/workflow.md).
-## 5. Acknowledgments
-
-Special thanks to [Jiaming Xu](https://github.com/Xujiaming1) for his support, [Haotian Li](https://github.com/luo-xue) for the equipment, and the [velo2cam_calibration](https://github.com/beltransen/velo2cam_calibration) algorithm.
+Writes `<output_path>/multi_calib_result.txt` (R, t, RMSE, scenes used).
+Both nodes read the same `config/qr_params.yaml`; `min_scenes` lives there too.
